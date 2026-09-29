@@ -15,11 +15,12 @@ class ContactRepositoryFake : ContactRepository {
 
     override fun getContacts(): Flow<List<Contact>> = _contacts.asStateFlow()
 
-    override suspend fun addContact(name: String, phone: String, isPriority: Boolean) {
-        delay(500)
+    override suspend fun addContact(name: String, relationship: String, phone: String, isPriority: Boolean) {
+        delay(300)
         val newContact = Contact(
             id = UUID.randomUUID().toString(),
             name = name,
+            relationship = relationship,
             phone = phone,
             isPriority = isPriority
         )
@@ -29,14 +30,14 @@ class ContactRepositoryFake : ContactRepository {
     }
 
     override suspend fun deleteContact(id: String) {
-        delay(500)
+        delay(300)
         _contacts.update { currentList ->
             currentList.filterNot { it.id == id }
         }
     }
 
     override suspend fun togglePriority(id: String) {
-        delay(300)
+        delay(200)
         _contacts.update { currentList ->
             currentList.map { contact ->
                 if (contact.id == id) contact.copy(isPriority = !contact.isPriority)
