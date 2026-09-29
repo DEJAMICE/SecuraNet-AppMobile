@@ -69,9 +69,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(Screen.Main.route) {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Text("Main Flow Placeholder")
-                            }
+                            com.example.securanet.ui.main.MainScreen()
                         }
                     }
                 }
