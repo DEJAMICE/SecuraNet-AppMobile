@@ -27,7 +27,7 @@ fun ContactsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(id = R.string.nav_contacts)) }
+                title = { Text(stringResource(id = R.string.nav_trusted_network)) }
             )
         },
         floatingActionButton = {
