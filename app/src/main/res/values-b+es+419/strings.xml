@@ -11,12 +11,13 @@
     <string name="invalid_email">Formato de correo inválido</string>
     <string name="invalid_password">La contraseña debe tener al menos 8 caracteres</string>
     
-    <!-- Navigation -->
+    <!-- Navigation Tabs -->
     <string name="nav_home">Inicio</string>
-    <string name="nav_contacts">Contactos</string>
-    <string name="nav_sos">SOS</string>
+    <string name="nav_devices">Dispositivos</string>
+    <string name="nav_trusted_network">Red de confianza</string>
+    <string name="nav_profile">Perfil</string>
 
-    <!-- Contacts -->
+    <!-- Contacts / Trusted Network -->
     <string name="add_contact">Añadir Contacto</string>
     <string name="contact_name">Nombre</string>
     <string name="contact_relationship">Relación / Parentesco</string>

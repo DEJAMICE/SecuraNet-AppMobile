@@ -25,20 +25,27 @@ import com.example.securanet.SecuraNetApplication
 import com.example.securanet.presentation.ViewModelFactory
 import com.example.securanet.presentation.contacts.ContactsViewModel
 import com.example.securanet.ui.contacts.ContactsScreen
+import com.example.securanet.ui.devices.DevicesScreen
 import com.example.securanet.ui.home.HomeScreen
 import com.example.securanet.ui.navigation.Screen
-import com.example.securanet.ui.sos.SosScreen
+import com.example.securanet.ui.profile.ProfileScreen
 
 sealed class BottomNavItem(val route: String, val iconResId: Int, val labelResId: Int) {
     object Home : BottomNavItem(Screen.Home.route, R.drawable.home_24px, R.string.nav_home)
-    object Contacts : BottomNavItem(Screen.Contacts.route, R.drawable.person_24px, R.string.nav_contacts)
-    object Sos : BottomNavItem(Screen.Sos.route, R.drawable.warning_24px, R.string.nav_sos)
+    object Devices : BottomNavItem(Screen.Devices.route, R.drawable.devices_24px, R.string.nav_devices)
+    object TrustedNetwork : BottomNavItem(Screen.TrustedNetwork.route, R.drawable.group_24px, R.string.nav_trusted_network)
+    object Profile : BottomNavItem(Screen.Profile.route, R.drawable.account_circle_24px, R.string.nav_profile)
 }
 
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-    val items = listOf(BottomNavItem.Home, BottomNavItem.Contacts, BottomNavItem.Sos)
+    val items = listOf(
+        BottomNavItem.Home,
+        BottomNavItem.Devices,
+        BottomNavItem.TrustedNetwork,
+        BottomNavItem.Profile
+    )
 
     val context = LocalContext.current
     val appContainer = remember { (context.applicationContext as SecuraNetApplication).container }
@@ -79,11 +86,12 @@ fun MainScreen() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Home.route) { HomeScreen() }
-            composable(Screen.Contacts.route) {
+            composable(Screen.Devices.route) { DevicesScreen() }
+            composable(Screen.TrustedNetwork.route) {
                 val contactsViewModel: ContactsViewModel = viewModel(factory = viewModelFactory)
                 ContactsScreen(viewModel = contactsViewModel)
             }
-            composable(Screen.Sos.route) { SosScreen() }
+            composable(Screen.Profile.route) { ProfileScreen() }
         }
     }
 }
