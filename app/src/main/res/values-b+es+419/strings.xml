@@ -19,8 +19,16 @@
     <!-- Contacts -->
     <string name="add_contact">Añadir Contacto</string>
     <string name="contact_name">Nombre</string>
+    <string name="contact_relationship">Relación / Parentesco</string>
+    <string name="relationship_hint">ej. Mamá, Amigo(a)</string>
     <string name="contact_phone">Teléfono</string>
+    <string name="name_required">El nombre no puede estar vacío</string>
     <string name="no_contacts">No hay contactos añadidos aún</string>
+    <string name="search_contacts">Buscar contacto</string>
+    <string name="no_results">No se encontraron resultados</string>
+    <string name="clear_search">Limpiar búsqueda</string>
+    <string name="priority_contacts">Contactos prioritarios (%1$d)</string>
+    <string name="other_contacts">Otros contactos (%1$d)</string>
     <string name="priority">Prioridad</string>
     <string name="delete_contact">Eliminar Contacto</string>
     <string name="add">Añadir</string>

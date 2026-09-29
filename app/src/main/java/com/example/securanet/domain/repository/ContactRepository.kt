@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ContactRepository {
     fun getContacts(): Flow<List<Contact>>
-    suspend fun addContact(name: String, phone: String, isPriority: Boolean)
+    suspend fun addContact(name: String, relationship: String, phone: String = "", isPriority: Boolean = false)
     suspend fun deleteContact(id: String)
     suspend fun togglePriority(id: String)
 }
