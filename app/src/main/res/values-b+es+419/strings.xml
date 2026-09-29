@@ -35,11 +35,36 @@
     <string name="add">Añadir</string>
     <string name="cancel">Cancelar</string>
 
-    <!-- SOS -->
+    <!-- Home / Map placeholder -->
+    <string name="home_title">SecuraNet</string>
+    <string name="home_subtitle">Tu red de seguridad</string>
+    <string name="map_placeholder_label">Mapa de ubicación</string>
+    <string name="risk_zone">Zona de riesgo</string>
+    <string name="your_location">Tu ubicación</string>
+
+    <!-- SOS - Hold state -->
     <string name="sos_button">SOS</string>
-    <string name="sos_instruction">Mantén presionado por 3 segundos</string>
-    <string name="sos_cancelling">Cancelando en %1$d</string>
-    <string name="sos_alert_sent">¡Alerta Enviada!</string>
+    <string name="sos_hold_instruction">Mantén 3 s</string>
+    <string name="sos_holding">Activando…</string>
+    <string name="sos_release_to_cancel">Suelta para cancelar</string>
+
+    <!-- SOS - Countdown state -->
+    <string name="sos_countdown_title">¡SOS activándose!</string>
+    <string name="sos_countdown_subtitle">Si estás bien, cancela ahora. De lo contrario, la alerta se enviará automáticamente.</string>
+    <string name="sos_countdown_seconds">segundos</string>
+    <string name="sos_im_ok_cancel">Estoy bien – cancelar</string>
+    <string name="sos_send_now">Enviar SOS ahora</string>
+
+    <!-- SOS - Sent state -->
+    <string name="sos_alert_sent">ALERTA SOS ENVIADA</string>
+    <string name="sos_stay_calm">Mantén la calma. ¡Ayuda en camino!</string>
+    <string name="sos_priority_contacts_notified">%1$d contacto(s) prioritario(s) notificado(s)</string>
     <string name="sos_notified_contacts">Contactos notificados:</string>
-    <string name="sos_cancel_button">Cancelar Alerta</string>
+    <string name="sos_no_priority_contacts">Sin contactos prioritarios. Añade contactos y márcalos como prioridad en tu Red de confianza.</string>
+    <string name="sos_no_contacts_at_all">Sin contactos añadidos. Ve a Red de confianza para añadir contactos.</string>
+    <string name="sos_cancel_button">Estoy a salvo – cancelar alerta</string>
+    <string name="sos_cancel_alert_desc">Cancelar la alerta SOS</string>
+    <string name="sos_send_now_desc">Enviar alerta SOS inmediatamente</string>
+    <string name="sos_button_desc">Mantén presionado 3 segundos para enviar una alerta SOS</string>
+    <string name="sos_cancelling">Cancelando en %1$d</string>
 </resources>

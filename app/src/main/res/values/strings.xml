@@ -14,7 +14,7 @@
     <!-- Navigation Tabs -->
     <string name="nav_home">Home</string>
     <string name="nav_devices">Devices</string>
-    <string name="nav_trusted_network">Contacts</string>
+    <string name="nav_trusted_network">Trusted network</string>
     <string name="nav_profile">Profile</string>
 
     <!-- Contacts / Trusted Network -->
@@ -35,11 +35,36 @@
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
 
-    <!-- SOS -->
+    <!-- Home / Map placeholder -->
+    <string name="home_title">SecuraNet</string>
+    <string name="home_subtitle">Your safety network</string>
+    <string name="map_placeholder_label">Location map</string>
+    <string name="risk_zone">Risk zone</string>
+    <string name="your_location">Your location</string>
+
+    <!-- SOS - Hold state -->
     <string name="sos_button">SOS</string>
-    <string name="sos_instruction">Hold for 3 seconds</string>
-    <string name="sos_cancelling">Cancelling in %1$d</string>
-    <string name="sos_alert_sent">Alert Sent!</string>
+    <string name="sos_hold_instruction">Hold 3 s</string>
+    <string name="sos_holding">Activating…</string>
+    <string name="sos_release_to_cancel">Release to cancel</string>
+
+    <!-- SOS - Countdown state -->
+    <string name="sos_countdown_title">SOS activating!</string>
+    <string name="sos_countdown_subtitle">If you are OK, cancel now. Otherwise the alert will be sent automatically.</string>
+    <string name="sos_countdown_seconds">seconds</string>
+    <string name="sos_im_ok_cancel">I\'m OK – cancel</string>
+    <string name="sos_send_now">Send SOS now</string>
+
+    <!-- SOS - Sent state -->
+    <string name="sos_alert_sent">SOS ALERT SENT</string>
+    <string name="sos_stay_calm">Stay calm. Help is on the way!</string>
+    <string name="sos_priority_contacts_notified">%1$d priority contact(s) notified</string>
     <string name="sos_notified_contacts">Notified contacts:</string>
-    <string name="sos_cancel_button">Cancel Alert</string>
+    <string name="sos_no_priority_contacts">No priority contacts. Add contacts and mark them as priority in your Trusted Network.</string>
+    <string name="sos_no_contacts_at_all">No contacts added. Go to Trusted Network to add contacts.</string>
+    <string name="sos_cancel_button">I\'m safe – cancel alert</string>
+    <string name="sos_cancel_alert_desc">Cancel the SOS alert</string>
+    <string name="sos_send_now_desc">Send SOS alert immediately</string>
+    <string name="sos_button_desc">Press and hold for 3 seconds to send a SOS alert</string>
+    <string name="sos_cancelling">Cancelling in %1$d</string>
 </resources>

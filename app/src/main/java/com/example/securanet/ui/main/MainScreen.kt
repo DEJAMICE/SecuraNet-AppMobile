@@ -24,6 +24,7 @@ import com.example.securanet.R
 import com.example.securanet.SecuraNetApplication
 import com.example.securanet.presentation.ViewModelFactory
 import com.example.securanet.presentation.contacts.ContactsViewModel
+import com.example.securanet.presentation.sos.SosViewModel
 import com.example.securanet.ui.contacts.ContactsScreen
 import com.example.securanet.ui.devices.DevicesScreen
 import com.example.securanet.ui.home.HomeScreen
@@ -85,7 +86,10 @@ fun MainScreen() {
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Home.route) { HomeScreen() }
+            composable(Screen.Home.route) {
+                val sosViewModel: SosViewModel = viewModel(factory = viewModelFactory)
+                HomeScreen(viewModel = sosViewModel)
+            }
             composable(Screen.Devices.route) { DevicesScreen() }
             composable(Screen.TrustedNetwork.route) {
                 val contactsViewModel: ContactsViewModel = viewModel(factory = viewModelFactory)
