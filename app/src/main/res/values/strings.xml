@@ -73,4 +73,40 @@
     <string name="sos_cancel_alert">I\'m safe – Cancel alert</string>
     <string name="sos_cancel_alert_desc">Hold for 2 seconds to cancel the SOS alert</string>
     <string name="sos_prototype_disclaimer">Prototype: alerts are simulated.</string>
+
+    <!-- Devices Tab -->
+    <string name="devices_title">IoT Devices</string>
+    <string name="devices_count_connected">%1$d connected</string>
+    <string name="devices_count_linked">%1$d linked</string>
+
+    <string name="devices_empty_title">No devices yet</string>
+    <string name="devices_empty_message">Link your Panic Button to send an SOS with one press.</string>
+    <string name="devices_link_new_device">Link new device</string>
+
+    <string name="device_badge_active">Active</string>
+    <string name="device_badge_disconnected">Disconnected</string>
+    <string name="device_badge_inactive">Inactive</string>
+
+    <string name="device_status_connected">Connected - Bluetooth</string>
+    <string name="device_status_last_seen">Last seen %1$d min ago</string>
+    <string name="device_status_not_linked">Not linked</string>
+
+    <string name="device_battery">Battery %1$d%%</string>
+    <string name="device_battery_last_sync">Battery %1$d%% (last sync)</string>
+    <string name="device_low_battery_warning">Low battery. Charge soon.</string>
+
+    <string name="device_action_test_signal">Test signal</string>
+    <string name="device_action_unlink">Unlink</string>
+    <string name="device_action_reconnect">Reconnect</string>
+    <string name="device_action_reconnecting">Reconnecting…</string>
+    <string name="device_action_link_sensor">Link sensor</string>
+
+    <string name="device_test_signal_sent">Test signal sent (simulated)</string>
+
+    <string name="device_unlink_dialog_title">Unlink device</string>
+    <string name="device_unlink_dialog_message">Are you sure you want to unlink %1$s? You won\'t be able to use it for emergency alerts until re-linked.</string>
+    <string name="device_unlink_confirm">Unlink</string>
+
+    <string name="device_panic_button">Panic Button</string>
+    <string name="device_smart_sensor">Smart Sensor</string>
 </resources>

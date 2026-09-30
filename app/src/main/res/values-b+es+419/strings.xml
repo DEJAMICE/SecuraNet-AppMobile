@@ -73,4 +73,40 @@
     <string name="sos_cancel_alert">Estoy a salvo – Cancelar alerta</string>
     <string name="sos_cancel_alert_desc">Mantén presionado 2 segundos para cancelar la alerta SOS</string>
     <string name="sos_prototype_disclaimer">Prototipo: las alertas son simuladas.</string>
+
+    <!-- Devices Tab -->
+    <string name="devices_title">Dispositivos IoT</string>
+    <string name="devices_count_connected">%1$d conectado(s)</string>
+    <string name="devices_count_linked">%1$d vinculado(s)</string>
+
+    <string name="devices_empty_title">Aún no hay dispositivos</string>
+    <string name="devices_empty_message">Vincula tu Botón del Pánico para enviar un SOS con una sola pulsación.</string>
+    <string name="devices_link_new_device">Vincular nuevo dispositivo</string>
+
+    <string name="device_badge_active">Activo</string>
+    <string name="device_badge_disconnected">Desconectado</string>
+    <string name="device_badge_inactive">Inactivo</string>
+
+    <string name="device_status_connected">Conectado - Bluetooth</string>
+    <string name="device_status_last_seen">Visto por última vez hace %1$d min</string>
+    <string name="device_status_not_linked">No vinculado</string>
+
+    <string name="device_battery">Batería %1$d%%</string>
+    <string name="device_battery_last_sync">Batería %1$d%% (última sinc.)</string>
+    <string name="device_low_battery_warning">Batería baja. Cargar pronto.</string>
+
+    <string name="device_action_test_signal">Probar señal</string>
+    <string name="device_action_unlink">Desvincular</string>
+    <string name="device_action_reconnect">Reconectar</string>
+    <string name="device_action_reconnecting">Reconectando…</string>
+    <string name="device_action_link_sensor">Vincular sensor</string>
+
+    <string name="device_test_signal_sent">Señal de prueba enviada (simulada)</string>
+
+    <string name="device_unlink_dialog_title">Desvincular dispositivo</string>
+    <string name="device_unlink_dialog_message">¿Estás seguro de que deseas desvincular %1$s? No podrás usarlo para alertas de emergencia hasta que vuelvas a vincularlo.</string>
+    <string name="device_unlink_confirm">Desvincular</string>
+
+    <string name="device_panic_button">Botón del Pánico</string>
+    <string name="device_smart_sensor">Sensor Inteligente</string>
 </resources>
