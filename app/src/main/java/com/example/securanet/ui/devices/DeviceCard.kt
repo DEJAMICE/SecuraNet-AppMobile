@@ -1,5 +1,6 @@
 package com.example.securanet.ui.devices
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -17,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.example.securanet.R
 import com.example.securanet.domain.model.Device
 import com.example.securanet.domain.model.DeviceType
-import com.example.securanet.ui.theme.SosRed
+import com.example.securanet.ui.theme.*
 
 @Composable
 fun DeviceCard(
@@ -29,75 +30,101 @@ fun DeviceCard(
     onLinkSensor: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isLowBattery = device.isLinked && device.batteryPercent <= 20
+
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        border = BorderStroke(1.dp, Color(0xFFE2E8F0))
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(18.dp)
         ) {
-            // Top Row: Icon + Name + Status Badge
+            // Top Row: Circular Icon + Device Name & Status Text + Status Badge
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val iconContainerColor = when {
+                    !device.isLinked -> MaterialTheme.colorScheme.surfaceVariant
+                    isLowBattery -> SosRedLight
+                    device.isConnected -> MaterialTheme.colorScheme.secondaryContainer
+                    else -> MaterialTheme.colorScheme.surfaceVariant
+                }
+
+                val iconTint = when {
+                    !device.isLinked -> MaterialTheme.colorScheme.onSurfaceVariant
+                    isLowBattery -> SosRed
+                    device.isConnected -> NavyPrimary
+                    else -> MaterialTheme.colorScheme.onSurfaceVariant
+                }
+
+                val iconRes = if (isLowBattery) R.drawable.warning_24px else R.drawable.devices_24px
+
                 Box(
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(44.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer),
+                        .background(iconContainerColor),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.devices_24px),
+                        painter = painterResource(id = iconRes),
                         contentDescription = device.name,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = iconTint,
+                        modifier = Modifier.size(22.dp)
                     )
                 }
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(14.dp))
 
                 val displayName = when (device.type) {
                     DeviceType.PANIC_BUTTON -> stringResource(id = R.string.device_panic_button)
                     DeviceType.SMART_SENSOR -> stringResource(id = R.string.device_smart_sensor)
                 }
 
-                Text(
-                    text = displayName,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.weight(1f)
-                )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = displayName,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Spacer(modifier = Modifier.height(2.dp))
+
+                    val statusText = when {
+                        !device.isLinked -> stringResource(id = R.string.device_status_not_linked)
+                        device.isConnected -> stringResource(id = R.string.device_status_connected)
+                        else -> stringResource(id = R.string.device_status_last_seen, device.lastSeenMinutes)
+                    }
+
+                    Text(
+                        text = statusText,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
 
                 // Status Badge
                 StatusBadge(isLinked = device.isLinked, isConnected = device.isConnected)
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Connection Status Text
-            val statusText = when {
-                !device.isLinked -> stringResource(id = R.string.device_status_not_linked)
-                device.isConnected -> stringResource(id = R.string.device_status_connected)
-                else -> stringResource(id = R.string.device_status_last_seen, device.lastSeenMinutes)
-            }
-
-            Text(
-                text = statusText,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
             // Battery Section (only if linked)
             if (device.isLinked) {
-                Spacer(modifier = Modifier.height(12.dp))
-                val isLowBattery = device.batteryPercent <= 20
-                val batteryColor = if (isLowBattery) SosRed else MaterialTheme.colorScheme.primary
+                Spacer(modifier = Modifier.height(16.dp))
+
+                val batteryColor = when {
+                    isLowBattery -> SosRed
+                    device.isConnected -> NavyPrimary
+                    else -> NeutralBadgeText
+                }
 
                 val batteryText = if (device.isConnected) {
                     stringResource(id = R.string.device_battery, device.batteryPercent)
@@ -107,19 +134,28 @@ fun DeviceCard(
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.battery_std_24px),
-                        contentDescription = stringResource(id = R.string.device_battery, device.batteryPercent),
-                        tint = batteryColor,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.battery_std_24px),
+                            contentDescription = stringResource(id = R.string.device_battery, device.batteryPercent),
+                            tint = batteryColor,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = if (isLowBattery) "Battery Level" else "Battery",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
                     Text(
                         text = batteryText,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold,
                         color = batteryColor
                     )
                 }
@@ -130,23 +166,21 @@ fun DeviceCard(
                     progress = { device.batteryPercent / 100f },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(8.dp)
-                        .clip(RoundedCornerShape(4.dp)),
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(3.dp)),
                     color = batteryColor,
-                    trackColor = batteryColor.copy(alpha = 0.2f)
+                    trackColor = batteryColor.copy(alpha = 0.15f)
                 )
 
-                // Low Battery Warning Message (Color + Icon + Explicit text)
+                // Low Battery Warning Message
                 if (isLowBattery) {
                     Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             painter = painterResource(id = R.drawable.warning_24px),
                             contentDescription = stringResource(id = R.string.device_low_battery_warning),
                             tint = SosRed,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(16.dp)
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
@@ -164,20 +198,43 @@ fun DeviceCard(
             // Action Buttons Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (!device.isLinked) {
                     Button(
                         onClick = onLinkSensor,
-                        modifier = Modifier.heightIn(min = 48.dp)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = NavyPrimary,
+                            contentColor = OnNavy
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 48.dp)
                     ) {
-                        Text(stringResource(id = R.string.device_action_link_sensor))
+                        Icon(
+                            painter = painterResource(id = R.drawable.add_24px),
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(id = R.string.device_action_link_sensor),
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 } else if (device.isConnected) {
-                    OutlinedButton(
+                    Button(
                         onClick = { onTestSignal(device) },
-                        modifier = Modifier.heightIn(min = 48.dp)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = NavyPrimary,
+                            contentColor = OnNavy
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .heightIn(min = 48.dp)
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.check_circle_24px),
@@ -185,31 +242,59 @@ fun DeviceCard(
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(stringResource(id = R.string.device_action_test_signal))
+                        Text(
+                            text = stringResource(id = R.string.device_action_test_signal),
+                            fontWeight = FontWeight.Bold
+                        )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    TextButton(
+
+                    Button(
                         onClick = { onUnlinkRequested(device) },
-                        modifier = Modifier.heightIn(min = 48.dp),
-                        colors = ButtonDefaults.textButtonColors(contentColor = SosRed)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = SecondaryButtonBackground,
+                            contentColor = SecondaryButtonText
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .heightIn(min = 48.dp)
                     ) {
-                        Text(stringResource(id = R.string.device_action_unlink))
+                        Icon(
+                            painter = painterResource(id = R.drawable.close_24px),
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = stringResource(id = R.string.device_action_unlink),
+                            fontWeight = FontWeight.Medium
+                        )
                     }
                 } else {
-                    // Disconnected: Reconnect & Unlink
+                    // Disconnected: Reconnect primary, Unlink secondary
                     Button(
                         onClick = { onReconnect(device) },
                         enabled = !isReconnecting,
-                        modifier = Modifier.heightIn(min = 48.dp)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = NavyPrimary,
+                            contentColor = OnNavy
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .heightIn(min = 48.dp)
                     ) {
                         if (isReconnecting) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(18.dp),
-                                color = MaterialTheme.colorScheme.onPrimary,
+                                color = OnNavy,
                                 strokeWidth = 2.dp
                             )
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text(stringResource(id = R.string.device_action_reconnecting))
+                            Text(
+                                text = stringResource(id = R.string.device_action_reconnecting),
+                                fontWeight = FontWeight.Bold
+                            )
                         } else {
                             Icon(
                                 painter = painterResource(id = R.drawable.refresh_24px),
@@ -217,16 +302,34 @@ fun DeviceCard(
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text(stringResource(id = R.string.device_action_reconnect))
+                            Text(
+                                text = stringResource(id = R.string.device_action_reconnect),
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    TextButton(
+
+                    Button(
                         onClick = { onUnlinkRequested(device) },
-                        modifier = Modifier.heightIn(min = 48.dp),
-                        colors = ButtonDefaults.textButtonColors(contentColor = SosRed)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = SecondaryButtonBackground,
+                            contentColor = SecondaryButtonText
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .heightIn(min = 48.dp)
                     ) {
-                        Text(stringResource(id = R.string.device_action_unlink))
+                        Icon(
+                            painter = painterResource(id = R.drawable.close_24px),
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = stringResource(id = R.string.device_action_unlink),
+                            fontWeight = FontWeight.Medium
+                        )
                     }
                 }
             }
@@ -241,33 +344,43 @@ private fun StatusBadge(
 ) {
     val (backgroundColor, textColor, textRes) = when {
         !isLinked -> Triple(
-            Color(0xFFEEEEEE),
-            Color(0xFF616161),
+            NeutralBadgeBackground,
+            NeutralBadgeText,
             R.string.device_badge_inactive
         )
         isConnected -> Triple(
-            Color(0xFFE8F5E9),
-            Color(0xFF2E7D32),
+            ActiveBadgeBackground,
+            ActiveBadgeText,
             R.string.device_badge_active
         )
         else -> Triple(
-            Color(0xFFFFF3E0),
-            Color(0xFFE65100),
+            NeutralBadgeBackground,
+            NeutralBadgeText,
             R.string.device_badge_disconnected
         )
     }
 
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(backgroundColor)
-            .padding(horizontal = 10.dp, vertical = 4.dp)
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = backgroundColor
     ) {
-        Text(
-            text = stringResource(id = textRes),
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold,
-            color = textColor
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(6.dp)
+                    .clip(CircleShape)
+                    .background(textColor)
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = stringResource(id = textRes),
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                color = textColor
+            )
+        }
     }
 }

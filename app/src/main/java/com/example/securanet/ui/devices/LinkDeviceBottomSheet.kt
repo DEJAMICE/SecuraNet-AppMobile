@@ -1,8 +1,10 @@
 package com.example.securanet.ui.devices
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -17,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.example.securanet.R
 import com.example.securanet.domain.model.DeviceType
 import com.example.securanet.domain.model.DiscoveredDevice
-import com.example.securanet.ui.theme.SurfaceWhite
+import com.example.securanet.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +52,7 @@ fun LinkDeviceBottomSheet(
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = stringResource(id = R.string.link_device_sheet_instruction),
@@ -86,12 +88,12 @@ fun LinkDeviceBottomSheet(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Scanning / Result Content
+            // Scanning / Results Content
             when {
                 isAlreadyLinked -> {
                     Surface(
-                        color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f),
-                        shape = RoundedCornerShape(12.dp),
+                        color = BannerAttentionBackground,
+                        shape = RoundedCornerShape(14.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Row(
@@ -101,15 +103,15 @@ fun LinkDeviceBottomSheet(
                             Icon(
                                 painter = painterResource(id = R.drawable.warning_24px),
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.error,
+                                tint = SosRed,
                                 modifier = Modifier.size(24.dp)
                             )
                             Spacer(modifier = Modifier.width(12.dp))
                             Text(
                                 text = stringResource(id = R.string.link_device_already_linked),
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onErrorContainer,
-                                fontWeight = FontWeight.Medium
+                                color = BannerAttentionText,
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
@@ -122,15 +124,46 @@ fun LinkDeviceBottomSheet(
                             .padding(vertical = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        CircularProgressIndicator(
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(36.dp)
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
+                        // Concentric Bluetooth Halo Illustration
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.size(110.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(110.dp)
+                                    .clip(CircleShape)
+                                    .background(NavyPrimary.copy(alpha = 0.05f))
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(80.dp)
+                                    .clip(CircleShape)
+                                    .background(NavyPrimary.copy(alpha = 0.12f))
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(54.dp)
+                                    .clip(CircleShape)
+                                    .background(NavyPrimary),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.bluetooth_24px),
+                                    contentDescription = null,
+                                    tint = OnNavy,
+                                    modifier = Modifier.size(26.dp)
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
                         Text(
                             text = stringResource(id = R.string.link_device_searching),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -138,7 +171,7 @@ fun LinkDeviceBottomSheet(
                 discoveredDevices.isNotEmpty() -> {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         discoveredDevices.forEach { device ->
                             DiscoveredDeviceRow(
@@ -154,13 +187,17 @@ fun LinkDeviceBottomSheet(
             Spacer(modifier = Modifier.height(24.dp))
 
             // Cancel Button
-            OutlinedButton(
+            TextButton(
                 onClick = onDismiss,
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 48.dp)
             ) {
-                Text(stringResource(id = R.string.cancel))
+                Text(
+                    text = stringResource(id = R.string.cancel),
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
@@ -175,30 +212,30 @@ private fun SelectableDeviceTypeCard(
     onSelect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val borderColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+    val borderColor = if (isSelected) NavyPrimary else MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
     val containerColor = if (isSelected) {
-        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)
     } else {
-        MaterialTheme.colorScheme.surface
+        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
     }
 
     OutlinedCard(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(16.dp))
             .selectable(
                 selected = isSelected,
                 onClick = onSelect,
                 role = Role.RadioButton
             ),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         border = BorderStroke(if (isSelected) 2.dp else 1.dp, borderColor),
         colors = CardDefaults.outlinedCardColors(containerColor = containerColor)
     ) {
         Column(
             modifier = Modifier
-                .padding(12.dp)
+                .padding(14.dp)
                 .fillMaxWidth()
-                .heightIn(min = 100.dp),
+                .heightIn(min = 104.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
@@ -206,21 +243,43 @@ private fun SelectableDeviceTypeCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.devices_24px),
-                    contentDescription = null,
-                    tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(24.dp)
-                )
+                val iconBg = if (isSelected) NavyPrimary else MaterialTheme.colorScheme.surfaceVariant
+                val iconTint = if (isSelected) OnNavy else MaterialTheme.colorScheme.onSurfaceVariant
 
-                RadioButton(
-                    selected = isSelected,
-                    onClick = onSelect,
-                    modifier = Modifier.size(24.dp)
-                )
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(iconBg),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.devices_24px),
+                        contentDescription = null,
+                        tint = iconTint,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+
+                if (isSelected) {
+                    Box(
+                        modifier = Modifier
+                            .size(22.dp)
+                            .clip(CircleShape)
+                            .background(NavyPrimary),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.check_circle_24px),
+                            contentDescription = null,
+                            tint = OnNavy,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Text(
                 text = title,
@@ -244,9 +303,9 @@ private fun DiscoveredDeviceRow(
     isLinking: Boolean,
     onLink: () -> Unit
 ) {
-    Card(
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -260,17 +319,27 @@ private fun DiscoveredDeviceRow(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f)
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.bluetooth_24px),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
-                )
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.secondaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.bluetooth_24px),
+                        contentDescription = null,
+                        tint = NavyPrimary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
                 Spacer(modifier = Modifier.width(12.dp))
+
                 Text(
                     text = device.name,
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
@@ -278,16 +347,24 @@ private fun DiscoveredDeviceRow(
             Button(
                 onClick = onLink,
                 enabled = !isLinking,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = NavyPrimary,
+                    contentColor = OnNavy
+                ),
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.heightIn(min = 48.dp)
             ) {
                 if (isLinking) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(16.dp),
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = OnNavy,
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text(stringResource(id = R.string.link_device_action_link))
+                    Text(
+                        text = stringResource(id = R.string.link_device_action_link),
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
