@@ -16,7 +16,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.example.securanet.R
 import com.example.securanet.presentation.contacts.ContactsViewModel
-
+import com.example.securanet.ui.theme.SurfaceWhite
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactsScreen(
@@ -184,6 +184,8 @@ private fun AddContactDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = SurfaceWhite,
+        tonalElevation = 0.dp,
         title = { Text(stringResource(id = R.string.add_contact)) },
         text = {
             Column {

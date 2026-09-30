@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">SecuraNet</string>
-    
+
     <!-- Auth -->
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -10,11 +10,12 @@
     <string name="already_have_account">Already have an account? Login</string>
     <string name="invalid_email">Invalid email format</string>
     <string name="invalid_password">Password must be at least 8 characters</string>
-    
+
     <!-- Navigation Tabs -->
     <string name="nav_home">Home</string>
     <string name="nav_devices">Devices</string>
-    <string name="nav_trusted_network">Contacts</string>
+    <string name="nav_trusted_network">Trusted network</string>
+    <string name="nav_trusted_network_short">Network</string>
     <string name="nav_profile">Profile</string>
 
     <!-- Contacts / Trusted Network -->
@@ -35,11 +36,41 @@
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
 
-    <!-- SOS -->
+    <!-- Home / map placeholder -->
+    <string name="map_placeholder_desc">Simulated location map</string>
+    <string name="your_location">Your location</string>
+    <string name="risk_zone">Risk zone</string>
+
+    <!-- SOS – Idle -->
     <string name="sos_button">SOS</string>
-    <string name="sos_instruction">Hold for 3 seconds</string>
-    <string name="sos_cancelling">Cancelling in %1$d</string>
-    <string name="sos_alert_sent">Alert Sent!</string>
-    <string name="sos_notified_contacts">Notified contacts:</string>
-    <string name="sos_cancel_button">Cancel Alert</string>
+    <string name="sos_hold_instruction">Hold for 3s</string>
+    <string name="sos_button_desc">Press and hold for 3 seconds to activate SOS alert</string>
+
+    <!-- SOS – Holding -->
+    <string name="sos_activating">Activating…</string>
+    <string name="sos_release_to_cancel">Release to cancel</string>
+
+    <!-- SOS – Countdown -->
+    <string name="sos_countdown_title">SOS activated</string>
+    <string name="sos_countdown_subtitle">If you don\'t respond, your priority contacts will be notified.</string>
+    <string name="sos_countdown_seconds_desc">%1$d seconds remaining</string>
+    <string name="sos_im_okay_cancel">I\'m okay – Cancel</string>
+    <string name="sos_send_now">Send SOS now</string>
+    <string name="sos_send_now_desc">Send SOS alert immediately without waiting</string>
+
+    <!-- SOS – Sent -->
+    <string name="sos_alert_sent_title">SOS alert sent</string>
+    <string name="sos_alert_sent_subtitle_contacts">Your priority contacts are being notified.</string>
+    <string name="sos_alert_sent_subtitle_none">No one has been notified yet.</string>
+    <string name="sos_priority_notified">%1$d priority contact(s) notified</string>
+    <string name="sos_no_priority_message">You have contacts, but none is marked as priority. Mark at least one contact as priority so they receive your SOS alerts.</string>
+    <string name="sos_go_to_trusted_network">Go to Trusted network</string>
+    <string name="sos_no_contacts_message">You don\'t have any trusted contacts yet. Add one so they can receive your emergency alerts.</string>
+    <string name="sos_add_trusted_contact">Add trusted contact</string>
+    <string name="sos_simulated_location">Simulated location</string>
+    <string name="sos_call_emergency">Call emergency services (105)</string>
+    <string name="sos_call_emergency_desc">Open dialer to call emergency services</string>
+    <string name="sos_cancel_alert">I\'m safe – Cancel alert</string>
+    <string name="sos_cancel_alert_desc">Hold for 2 seconds to cancel the SOS alert</string>
+    <string name="sos_prototype_disclaimer">Prototype: alerts are simulated.</string>
 </resources>

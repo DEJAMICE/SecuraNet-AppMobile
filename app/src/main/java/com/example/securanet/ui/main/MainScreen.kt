@@ -1,18 +1,24 @@
 package com.example.securanet.ui.main
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -24,16 +30,33 @@ import com.example.securanet.R
 import com.example.securanet.SecuraNetApplication
 import com.example.securanet.presentation.ViewModelFactory
 import com.example.securanet.presentation.contacts.ContactsViewModel
+import com.example.securanet.presentation.sos.SosPhase
+import com.example.securanet.presentation.sos.SosViewModel
 import com.example.securanet.ui.contacts.ContactsScreen
 import com.example.securanet.ui.devices.DevicesScreen
 import com.example.securanet.ui.home.HomeScreen
 import com.example.securanet.ui.navigation.Screen
 import com.example.securanet.ui.profile.ProfileScreen
+import com.example.securanet.ui.theme.NavBarIndicator
 
-sealed class BottomNavItem(val route: String, val iconResId: Int, val labelResId: Int) {
+/**
+ * @param labelResId      Full name – used as the tab label and contentDescription.
+ * @param shortLabelResId Short name shown on screen when the full text wraps.
+ */
+sealed class BottomNavItem(
+    val route: String,
+    val iconResId: Int,
+    val labelResId: Int,
+    val shortLabelResId: Int = labelResId
+) {
     object Home : BottomNavItem(Screen.Home.route, R.drawable.home_24px, R.string.nav_home)
     object Devices : BottomNavItem(Screen.Devices.route, R.drawable.devices_24px, R.string.nav_devices)
-    object TrustedNetwork : BottomNavItem(Screen.TrustedNetwork.route, R.drawable.group_24px, R.string.nav_trusted_network)
+    object TrustedNetwork : BottomNavItem(
+        route            = Screen.TrustedNetwork.route,
+        iconResId        = R.drawable.group_24px,
+        labelResId       = R.string.nav_trusted_network,         // full name → contentDescription
+        shortLabelResId  = R.string.nav_trusted_network_short    // "Network" / "Red" → visible label
+    )
     object Profile : BottomNavItem(Screen.Profile.route, R.drawable.account_circle_24px, R.string.nav_profile)
 }
 
@@ -51,31 +74,59 @@ fun MainScreen() {
     val appContainer = remember { (context.applicationContext as SecuraNetApplication).container }
     val viewModelFactory = remember { ViewModelFactory(appContainer) }
 
+    // SosViewModel is hoisted here so MainScreen can react to the SOS phase
+    val sosViewModel: SosViewModel = viewModel(factory = viewModelFactory)
+    val sosState by sosViewModel.state.collectAsState()
+
+    // Hide the bottom bar during Countdown and Sent phases
+    val showBottomBar = sosState.phase == SosPhase.IDLE || sosState.phase == SosPhase.HOLDING
+
     Scaffold(
         bottomBar = {
-            NavigationBar {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-                items.forEach { item ->
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = item.iconResId),
-                                contentDescription = stringResource(id = item.labelResId)
-                            )
-                        },
-                        label = { Text(stringResource(id = item.labelResId)) },
-                        selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
-                        onClick = {
-                            navController.navigate(item.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+            if (showBottomBar) {
+                Column {
+                    // Subtle top divider to separate the bar from the map
+                    HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outline)
+                    NavigationBar(
+                        // White background – surface token, no tonal overlay
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        tonalElevation = 0.dp
+                    ) {
+                        val navBackStackEntry by navController.currentBackStackEntryAsState()
+                        val currentDestination = navBackStackEntry?.destination
+                        items.forEach { item ->
+                            val isSelected = currentDestination?.hierarchy
+                                ?.any { it.route == item.route } == true
+                            NavigationBarItem(
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(id = item.iconResId),
+                                        // Full name for accessibility
+                                        contentDescription = stringResource(id = item.labelResId)
+                                    )
+                                },
+                                // Short name for the visible label
+                                label = { Text(stringResource(id = item.shortLabelResId)) },
+                                selected = isSelected,
+                                colors = NavigationBarItemDefaults.colors(
+                                    indicatorColor       = NavBarIndicator,
+                                    selectedIconColor    = MaterialTheme.colorScheme.primary,
+                                    selectedTextColor    = MaterialTheme.colorScheme.primary,
+                                    unselectedIconColor  = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    unselectedTextColor  = MaterialTheme.colorScheme.onSurfaceVariant
+                                ),
+                                onClick = {
+                                    navController.navigate(item.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
                                 }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
+                            )
                         }
-                    )
+                    }
                 }
             }
         }
@@ -85,7 +136,20 @@ fun MainScreen() {
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Home.route) { HomeScreen() }
+            composable(Screen.Home.route) {
+                HomeScreen(
+                    viewModel = sosViewModel,
+                    onNavigateToTrustedNetwork = {
+                        navController.navigate(Screen.TrustedNetwork.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
+            }
             composable(Screen.Devices.route) { DevicesScreen() }
             composable(Screen.TrustedNetwork.route) {
                 val contactsViewModel: ContactsViewModel = viewModel(factory = viewModelFactory)
