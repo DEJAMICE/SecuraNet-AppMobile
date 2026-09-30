@@ -109,4 +109,15 @@
 
     <string name="device_panic_button">Panic Button</string>
     <string name="device_smart_sensor">Smart Sensor</string>
+
+    <!-- Link Device BottomSheet -->
+    <string name="link_device_sheet_title">Link a new device</string>
+    <string name="link_device_sheet_instruction">Make sure your device is turned on and close to your phone.</string>
+    <string name="device_panic_button_desc">One press sends an SOS</string>
+    <string name="device_smart_sensor_desc">Detects sudden movement</string>
+    <string name="link_device_searching">Searching for nearby devices…</string>
+    <string name="link_device_already_linked">This type of device is already linked.</string>
+    <string name="link_device_action_link">Link</string>
+    <string name="link_device_linking">Linking…</string>
+    <string name="link_device_success">Device linked</string>
 </resources>

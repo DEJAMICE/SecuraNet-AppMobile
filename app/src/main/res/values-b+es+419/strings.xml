@@ -109,4 +109,15 @@
 
     <string name="device_panic_button">Botón del Pánico</string>
     <string name="device_smart_sensor">Sensor Inteligente</string>
+
+    <!-- Link Device BottomSheet -->
+    <string name="link_device_sheet_title">Vincular un nuevo dispositivo</string>
+    <string name="link_device_sheet_instruction">Asegúrate de que tu dispositivo esté encendido y cerca de tu teléfono.</string>
+    <string name="device_panic_button_desc">Una pulsación envía un SOS</string>
+    <string name="device_smart_sensor_desc">Detecta movimientos repentinos</string>
+    <string name="link_device_searching">Buscando dispositivos cercanos…</string>
+    <string name="link_device_already_linked">Este tipo de dispositivo ya está vinculado.</string>
+    <string name="link_device_action_link">Vincular</string>
+    <string name="link_device_linking">Vinculando…</string>
+    <string name="link_device_success">Dispositivo vinculado</string>
 </resources>

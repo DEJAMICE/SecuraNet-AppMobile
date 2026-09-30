@@ -15,9 +15,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.securanet.R
-import com.example.securanet.data.DeviceRepositoryFake
 import com.example.securanet.domain.model.Device
 import com.example.securanet.domain.model.DeviceType
+import com.example.securanet.domain.model.DiscoveredDevice
 import com.example.securanet.presentation.devices.DevicesState
 import com.example.securanet.presentation.devices.DevicesViewModel
 import com.example.securanet.ui.theme.SecuraNetTheme
@@ -40,6 +40,7 @@ fun DevicesScreen(
     }
 
     val testSignalMessage = stringResource(id = R.string.device_test_signal_sent)
+    val linkSuccessMessage = stringResource(id = R.string.link_device_success)
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -51,11 +52,11 @@ fun DevicesScreen(
         ) {
             DevicesScreenContent(
                 state = state,
-                onLinkNewDevice = { viewModel.linkDevice(DeviceType.PANIC_BUTTON) },
+                onLinkNewDevice = { viewModel.openLinkSheet(DeviceType.PANIC_BUTTON) },
                 onTestSignal = { device -> viewModel.testDevice(device.id, testSignalMessage) },
                 onUnlinkRequested = { device -> viewModel.requestUnlink(device) },
                 onReconnect = { device -> viewModel.reconnectDevice(device.id) },
-                onLinkSensor = { viewModel.linkDevice(DeviceType.SMART_SENSOR) }
+                onLinkSensor = { viewModel.openLinkSheet(DeviceType.SMART_SENSOR) }
             )
 
             // Unlink confirmation dialog
@@ -89,6 +90,24 @@ fun DevicesScreen(
                             Text(stringResource(id = R.string.cancel))
                         }
                     }
+                )
+            }
+
+            // Link Device BottomSheet
+            if (state.isLinkSheetOpen) {
+                val isAlreadyLinked = state.devices.any {
+                    it.type == state.selectedDeviceType && it.isLinked
+                }
+
+                LinkDeviceBottomSheet(
+                    selectedType = state.selectedDeviceType,
+                    isAlreadyLinked = isAlreadyLinked,
+                    isScanning = state.isScanning,
+                    discoveredDevices = state.discoveredDevices,
+                    isLinking = state.isLinkingDevice,
+                    onSelectType = { viewModel.selectDeviceType(it) },
+                    onLinkDiscovered = { discovered -> viewModel.linkDiscoveredDevice(discovered, linkSuccessMessage) },
+                    onDismiss = { viewModel.closeLinkSheet() }
                 )
             }
         }
