@@ -20,7 +20,7 @@ class ViewModelFactory(private val appContainer: AppContainer) : ViewModelProvid
         }
         if (modelClass.isAssignableFrom(SosViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return SosViewModel(appContainer.contactRepository) as T
+            return SosViewModel(appContainer.contactRepository, appContainer.deviceRepository) as T
         }
         if (modelClass.isAssignableFrom(DevicesViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

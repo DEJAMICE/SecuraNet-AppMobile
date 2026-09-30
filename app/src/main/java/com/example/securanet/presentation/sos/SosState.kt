@@ -17,6 +17,13 @@ enum class SosPhase {
     SENT
 }
 
+/** Status of the Panic Button hardware device. */
+enum class PanicButtonStatus {
+    NOT_LINKED,
+    CONNECTED,
+    DISCONNECTED
+}
+
 data class SosState(
     val phase: SosPhase = SosPhase.IDLE,
 
@@ -36,5 +43,8 @@ data class SosState(
     val hasContactsButNoPriority: Boolean = false,
 
     /** Progress of the "cancel alert" 2-s hold on the SENT screen (0 → 1). */
-    val cancelHoldProgress: Float = 0f
+    val cancelHoldProgress: Float = 0f,
+
+    /** Status of the Panic Button device for displaying the Home chip. */
+    val panicButtonStatus: PanicButtonStatus = PanicButtonStatus.NOT_LINKED
 )

@@ -51,7 +51,7 @@ import com.example.securanet.ui.theme.RiskZoneBorder
 import com.example.securanet.ui.theme.RiskZoneFill
 import com.example.securanet.ui.theme.SosHalo
 import com.example.securanet.ui.theme.SosRed
-
+import androidx.compose.ui.draw.clip
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
 // ─────────────────────────────────────────────────────────────────────────────
@@ -59,16 +59,19 @@ import com.example.securanet.ui.theme.SosRed
 @Composable
 fun HomeScreen(
     viewModel: SosViewModel,
-    onNavigateToTrustedNetwork: () -> Unit
+    onNavigateToTrustedNetwork: () -> Unit,
+    onNavigateToDevices: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
     when (state.phase) {
         SosPhase.IDLE, SosPhase.HOLDING -> HomeIdleScreen(
+            panicButtonStatus = state.panicButtonStatus,
             holdProgress = state.holdProgress,
             isHolding    = state.phase == SosPhase.HOLDING,
             onHoldStart  = viewModel::onSosHoldStart,
-            onHoldRelease = viewModel::onSosHoldRelease
+            onHoldRelease = viewModel::onSosHoldRelease,
+            onNavigateToDevices = onNavigateToDevices
         )
         SosPhase.COUNTDOWN -> CountdownScreen(
             seconds    = state.countdownSeconds,
@@ -96,13 +99,21 @@ fun HomeScreen(
 
 @Composable
 private fun HomeIdleScreen(
+    panicButtonStatus: com.example.securanet.presentation.sos.PanicButtonStatus,
     holdProgress: Float,
     isHolding: Boolean,
     onHoldStart: () -> Unit,
-    onHoldRelease: () -> Unit
+    onHoldRelease: () -> Unit,
+    onNavigateToDevices: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         MapPlaceholder(modifier = Modifier.fillMaxSize())
+
+        PanicButtonChip(
+            status = panicButtonStatus,
+            onNavigateToDevices = onNavigateToDevices,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
 
         SosHoldButton(
             holdProgress  = holdProgress,
@@ -113,6 +124,51 @@ private fun HomeIdleScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 40.dp)
         )
+    }
+}
+
+@Composable
+private fun PanicButtonChip(
+    status: com.example.securanet.presentation.sos.PanicButtonStatus,
+    onNavigateToDevices: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (status == com.example.securanet.presentation.sos.PanicButtonStatus.NOT_LINKED) return
+
+    val isConnected = status == com.example.securanet.presentation.sos.PanicButtonStatus.CONNECTED
+    val dotColor = if (isConnected) com.example.securanet.ui.theme.ActiveBadgeText else com.example.securanet.ui.theme.NeutralBadgeText
+    val textRes = if (isConnected) R.string.home_button_connected else R.string.home_button_disconnected
+
+    Surface(
+        onClick = onNavigateToDevices,
+        shape = CircleShape,
+        color = com.example.securanet.ui.theme.SurfaceWhite.copy(alpha = 0.95f),
+        shadowElevation = 3.dp,
+        modifier = modifier
+            .padding(top = 16.dp)
+            .heightIn(min = 48.dp)
+            .semantics {
+                contentDescription = if (isConnected) "Panic button connected. Tap to manage devices." else "Panic button disconnected. Tap to manage devices."
+            }
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(dotColor)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = stringResource(id = textRes),
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }
 

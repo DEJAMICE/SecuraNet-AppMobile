@@ -145,4 +145,8 @@
     <string name="how_to_link_step2">2. Keep it close to your phone.</string>
     <string name="how_to_link_step3">3. Tap Link new device and choose your device.</string>
     <string name="how_to_link_got_it">Got it</string>
+
+    <!-- Home Tab Device Chip -->
+    <string name="home_button_connected">Button connected</string>
+    <string name="home_button_disconnected">Button disconnected</string>
 </resources>
