@@ -22,6 +22,7 @@ class DevicesViewModel(
     val state: StateFlow<DevicesState> = _state.asStateFlow()
 
     private var scanJob: Job? = null
+    private var testSignalJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -30,6 +31,8 @@ class DevicesViewModel(
             }
         }
     }
+
+    // ── Link Sheet Flow ──────────────────────────────────────────────────────────
 
     fun openLinkSheet(preselectedType: DeviceType) {
         _state.update { it.copy(isLinkSheetOpen = true) }
@@ -86,13 +89,23 @@ class DevicesViewModel(
         }
     }
 
-    fun linkDiscoveredDevice(discoveredDevice: DiscoveredDevice, successMessage: String) {
+    fun linkDiscoveredDevice(discoveredDevice: DiscoveredDevice) {
         scanJob?.cancel()
         scanJob = null
         _state.update { it.copy(isLinkingDevice = true) }
 
         viewModelScope.launch {
             deviceRepository.linkDevice(discoveredDevice.type)
+            val updatedDevice = _state.value.devices.firstOrNull { it.type == discoveredDevice.type }
+                ?: Device(
+                    id = discoveredDevice.id,
+                    type = discoveredDevice.type,
+                    name = discoveredDevice.name,
+                    isLinked = true,
+                    isConnected = true,
+                    batteryPercent = 100
+                )
+
             _state.update {
                 it.copy(
                     isLinkingDevice = false,
@@ -100,7 +113,7 @@ class DevicesViewModel(
                     selectedDeviceType = null,
                     isScanning = false,
                     discoveredDevices = emptyList(),
-                    snackbarMessage = successMessage
+                    linkedSuccessDevice = updatedDevice
                 )
             }
         }
@@ -124,6 +137,67 @@ class DevicesViewModel(
             )
         }
     }
+
+    // ── Test Signal Sheet Flow ───────────────────────────────────────────────────
+
+    fun openTestSheet(device: Device) {
+        testSignalJob?.cancel()
+        _state.update {
+            it.copy(
+                isTestSheetOpen = true,
+                testingDevice = device,
+                isTestWaiting = true,
+                isTestSuccess = false
+            )
+        }
+
+        testSignalJob = viewModelScope.launch {
+            deviceRepository.testDevice(device.id)
+            delay(3000)
+            _state.update {
+                it.copy(
+                    isTestWaiting = false,
+                    isTestSuccess = true
+                )
+            }
+        }
+    }
+
+    fun closeTestSheet() {
+        testSignalJob?.cancel()
+        testSignalJob = null
+        _state.update {
+            it.copy(
+                isTestSheetOpen = false,
+                testingDevice = null,
+                isTestWaiting = false,
+                isTestSuccess = false
+            )
+        }
+    }
+
+    // ── Link Success Sheet Flow ─────────────────────────────────────────────────
+
+    fun closeLinkSuccessSheet() {
+        _state.update { it.copy(linkedSuccessDevice = null) }
+    }
+
+    fun onTestFromLinkSuccess(device: Device) {
+        _state.update { it.copy(linkedSuccessDevice = null) }
+        openTestSheet(device)
+    }
+
+    // ── How To Link Sheet Flow ──────────────────────────────────────────────────
+
+    fun openHowToLinkSheet() {
+        _state.update { it.copy(isHowToLinkSheetOpen = true) }
+    }
+
+    fun closeHowToLinkSheet() {
+        _state.update { it.copy(isHowToLinkSheetOpen = false) }
+    }
+
+    // ── Existing Device Actions ──────────────────────────────────────────────────
 
     fun linkDevice(type: DeviceType) {
         viewModelScope.launch {
@@ -153,13 +227,6 @@ class DevicesViewModel(
         viewModelScope.launch {
             deviceRepository.reconnectDevice(id)
             _state.update { it.copy(reconnectingDeviceId = null) }
-        }
-    }
-
-    fun testDevice(id: String, message: String) {
-        viewModelScope.launch {
-            deviceRepository.testDevice(id)
-            _state.update { it.copy(snackbarMessage = message) }
         }
     }
 

@@ -120,4 +120,29 @@
     <string name="link_device_action_link">Vincular</string>
     <string name="link_device_linking">Vinculando…</string>
     <string name="link_device_success">Dispositivo vinculado</string>
+
+    <!-- Test Signal Sheet -->
+    <string name="test_sheet_badge">Modo de prueba – No se enviará ninguna alerta real</string>
+    <string name="test_sheet_title_panic">Prueba tu Botón del Pánico</string>
+    <string name="test_sheet_title_sensor">Prueba tu Sensor Inteligente</string>
+    <string name="test_sheet_instruction">Presiona tu botón físico una vez. Esto es solo una prueba, no se enviará ninguna alerta.</string>
+    <string name="test_sheet_waiting">Esperando tu botón…</string>
+    <string name="test_sheet_result_title">¡Funciona!</string>
+    <string name="test_sheet_result_message">Señal recibida. Tu botón está listo.</string>
+    <string name="test_sheet_done">Listo</string>
+
+    <!-- Link Success Sheet -->
+    <string name="link_success_title_panic">Botón del Pánico vinculado</string>
+    <string name="link_success_title_sensor">Sensor Inteligente vinculado</string>
+    <string name="link_success_message">Puedes probarlo ahora para comprobar que funciona.</string>
+    <string name="link_success_test_now">Probar ahora</string>
+    <string name="link_success_done">Listo</string>
+
+    <!-- How to Link Sheet -->
+    <string name="how_to_link_device_link">¿Cómo vinculo mi dispositivo?</string>
+    <string name="how_to_link_title">Cómo vincular tu dispositivo</string>
+    <string name="how_to_link_step1">1. Enciende tu dispositivo.</string>
+    <string name="how_to_link_step2">2. Mantenlo cerca de tu teléfono.</string>
+    <string name="how_to_link_step3">3. Toca Vincular nuevo dispositivo y elige tu dispositivo.</string>
+    <string name="how_to_link_got_it">Entendido</string>
 </resources>

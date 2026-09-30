@@ -120,4 +120,29 @@
     <string name="link_device_action_link">Link</string>
     <string name="link_device_linking">Linking…</string>
     <string name="link_device_success">Device linked</string>
+
+    <!-- Test Signal Sheet -->
+    <string name="test_sheet_badge">Test mode – No real alert will be sent</string>
+    <string name="test_sheet_title_panic">Test your Panic Button</string>
+    <string name="test_sheet_title_sensor">Test your Smart Sensor</string>
+    <string name="test_sheet_instruction">Press your physical button once. This is only a test, no alert will be sent.</string>
+    <string name="test_sheet_waiting">Waiting for your button…</string>
+    <string name="test_sheet_result_title">It works!</string>
+    <string name="test_sheet_result_message">Signal received. Your button is ready.</string>
+    <string name="test_sheet_done">Done</string>
+
+    <!-- Link Success Sheet -->
+    <string name="link_success_title_panic">Panic Button linked</string>
+    <string name="link_success_title_sensor">Smart Sensor linked</string>
+    <string name="link_success_message">You can test it now to check that it works.</string>
+    <string name="link_success_test_now">Test now</string>
+    <string name="link_success_done">Done</string>
+
+    <!-- How to Link Sheet -->
+    <string name="how_to_link_device_link">How do I link my device?</string>
+    <string name="how_to_link_title">How to link your device</string>
+    <string name="how_to_link_step1">1. Turn on your device.</string>
+    <string name="how_to_link_step2">2. Keep it close to your phone.</string>
+    <string name="how_to_link_step3">3. Tap Link new device and choose your device.</string>
+    <string name="how_to_link_got_it">Got it</string>
 </resources>

@@ -40,9 +40,6 @@ fun DevicesScreen(
         }
     }
 
-    val testSignalMessage = stringResource(id = R.string.device_test_signal_sent)
-    val linkSuccessMessage = stringResource(id = R.string.link_device_success)
-
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = SoftBackground
@@ -55,10 +52,11 @@ fun DevicesScreen(
             DevicesScreenContent(
                 state = state,
                 onLinkNewDevice = { viewModel.openLinkSheet(DeviceType.PANIC_BUTTON) },
-                onTestSignal = { device -> viewModel.testDevice(device.id, testSignalMessage) },
+                onTestSignal = { device -> viewModel.openTestSheet(device) },
                 onUnlinkRequested = { device -> viewModel.requestUnlink(device) },
                 onReconnect = { device -> viewModel.reconnectDevice(device.id) },
-                onLinkSensor = { viewModel.openLinkSheet(DeviceType.SMART_SENSOR) }
+                onLinkSensor = { viewModel.openLinkSheet(DeviceType.SMART_SENSOR) },
+                onOpenHowToLink = { viewModel.openHowToLinkSheet() }
             )
 
             // Unlink confirmation dialog
@@ -95,7 +93,7 @@ fun DevicesScreen(
                 )
             }
 
-            // Link Device BottomSheet
+            // 1. Link Device BottomSheet
             if (state.isLinkSheetOpen) {
                 val isAlreadyLinked = state.devices.any {
                     it.type == state.selectedDeviceType && it.isLinked
@@ -108,8 +106,34 @@ fun DevicesScreen(
                     discoveredDevices = state.discoveredDevices,
                     isLinking = state.isLinkingDevice,
                     onSelectType = { viewModel.selectDeviceType(it) },
-                    onLinkDiscovered = { discovered -> viewModel.linkDiscoveredDevice(discovered, linkSuccessMessage) },
+                    onLinkDiscovered = { discovered -> viewModel.linkDiscoveredDevice(discovered) },
                     onDismiss = { viewModel.closeLinkSheet() }
+                )
+            }
+
+            // 2. Test Signal BottomSheet
+            if (state.isTestSheetOpen && state.testingDevice != null) {
+                TestSignalBottomSheet(
+                    device = state.testingDevice!!,
+                    isWaiting = state.isTestWaiting,
+                    isSuccess = state.isTestSuccess,
+                    onClose = { viewModel.closeTestSheet() }
+                )
+            }
+
+            // 3. Link Success Confirmation BottomSheet
+            if (state.linkedSuccessDevice != null) {
+                LinkSuccessBottomSheet(
+                    device = state.linkedSuccessDevice!!,
+                    onTestNow = { viewModel.onTestFromLinkSuccess(state.linkedSuccessDevice!!) },
+                    onDone = { viewModel.closeLinkSuccessSheet() }
+                )
+            }
+
+            // 4. How To Link BottomSheet
+            if (state.isHowToLinkSheetOpen) {
+                HowToLinkBottomSheet(
+                    onClose = { viewModel.closeHowToLinkSheet() }
                 )
             }
         }
@@ -124,6 +148,7 @@ fun DevicesScreenContent(
     onUnlinkRequested: (Device) -> Unit,
     onReconnect: (Device) -> Unit,
     onLinkSensor: () -> Unit,
+    onOpenHowToLink: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val linkedDevices = state.devices.filter { it.isLinked }
@@ -261,6 +286,28 @@ fun DevicesScreenContent(
                             fontWeight = FontWeight.Bold
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // How do I link my device link
+                    TextButton(
+                        onClick = onOpenHowToLink,
+                        modifier = Modifier.heightIn(min = 48.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.help_outline_24px),
+                            contentDescription = null,
+                            tint = NavyPrimary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = stringResource(id = R.string.how_to_link_device_link),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = NavyPrimary
+                        )
+                    }
                 }
             }
         } else {
@@ -362,25 +409,51 @@ fun DevicesScreenContent(
                     )
                 }
 
-                // Bottom + Link new device action button
+                // Bottom + Link new device action button & How do I link link
                 item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    TextButton(
-                        onClick = onLinkNewDevice,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 48.dp)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.add_24px),
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = stringResource(id = R.string.devices_link_new_device),
-                            fontWeight = FontWeight.Bold
-                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TextButton(
+                            onClick = onLinkNewDevice,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 48.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.add_24px),
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = stringResource(id = R.string.devices_link_new_device),
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        TextButton(
+                            onClick = onOpenHowToLink,
+                            modifier = Modifier.heightIn(min = 48.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.help_outline_24px),
+                                contentDescription = null,
+                                tint = NavyPrimary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = stringResource(id = R.string.how_to_link_device_link),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = NavyPrimary
+                            )
+                        }
                     }
                 }
             }
@@ -405,7 +478,8 @@ fun DevicesScreen_NoDeviceLinked_Preview() {
             onTestSignal = {},
             onUnlinkRequested = {},
             onReconnect = {},
-            onLinkSensor = {}
+            onLinkSensor = {},
+            onOpenHowToLink = {}
         )
     }
 }
@@ -425,67 +499,8 @@ fun DevicesScreen_Connected_Preview() {
             onTestSignal = {},
             onUnlinkRequested = {},
             onReconnect = {},
-            onLinkSensor = {}
-        )
-    }
-}
-
-@Preview(showBackground = true, name = "3. Low Battery State")
-@Composable
-fun DevicesScreen_LowBattery_Preview() {
-    SecuraNetTheme {
-        DevicesScreenContent(
-            state = DevicesState(
-                devices = listOf(
-                    Device("1", DeviceType.PANIC_BUTTON, "Panic Button", isLinked = true, isConnected = true, batteryPercent = 15),
-                    Device("2", DeviceType.SMART_SENSOR, "Smart Sensor", isLinked = false, isConnected = false, batteryPercent = 100)
-                )
-            ),
-            onLinkNewDevice = {},
-            onTestSignal = {},
-            onUnlinkRequested = {},
-            onReconnect = {},
-            onLinkSensor = {}
-        )
-    }
-}
-
-@Preview(showBackground = true, name = "4. Disconnected State")
-@Composable
-fun DevicesScreen_Disconnected_Preview() {
-    SecuraNetTheme {
-        DevicesScreenContent(
-            state = DevicesState(
-                devices = listOf(
-                    Device("1", DeviceType.PANIC_BUTTON, "Panic Button", isLinked = true, isConnected = false, batteryPercent = 80, lastSeenMinutes = 15),
-                    Device("2", DeviceType.SMART_SENSOR, "Smart Sensor", isLinked = false, isConnected = false, batteryPercent = 100)
-                )
-            ),
-            onLinkNewDevice = {},
-            onTestSignal = {},
-            onUnlinkRequested = {},
-            onReconnect = {},
-            onLinkSensor = {}
-        )
-    }
-}
-
-@Preview(showBackground = true, name = "5. Smart Sensor Not Linked State")
-@Composable
-fun DevicesScreen_SmartSensorNotLinked_Preview() {
-    SecuraNetTheme {
-        DevicesScreenContent(
-            state = DevicesState(
-                devices = listOf(
-                    Device("1", DeviceType.PANIC_BUTTON, "Panic Button", isLinked = true, isConnected = true, batteryPercent = 80),
-                    Device("2", DeviceType.SMART_SENSOR, "Smart Sensor", isLinked = false, isConnected = false, batteryPercent = 100)
-                )
-            ),
-            onLinkNewDevice = {},
-            onTestSignal = {},
-            onUnlinkRequested = {},
-            onReconnect = {},
-            onLinkSensor = {}
+            onLinkSensor = {},
+            onOpenHowToLink = {}
         )
     }
 }
