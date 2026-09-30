@@ -2,38 +2,39 @@ package com.example.securanet.presentation.sos
 
 import com.example.securanet.domain.model.Contact
 
-/**
- * Represents the different phases of the SOS feature.
- */
+/** Phase of the SOS flow. */
 enum class SosPhase {
-    /** Normal home state – SOS button is idle. */
+    /** Normal Home screen – SOS button is idle. */
     IDLE,
 
-    /** User is pressing and holding the SOS button (0–3 s). */
+    /** User is holding the SOS button (progress 0 → 1 over 3 s). */
     HOLDING,
 
     /** Hold completed – 5-second cancel countdown is running. */
     COUNTDOWN,
 
-    /** Alert was confirmed (countdown finished or "Send now" tapped). */
+    /** Alert was confirmed (countdown expired OR "Send now" tapped). */
     SENT
 }
 
 data class SosState(
     val phase: SosPhase = SosPhase.IDLE,
 
-    /** Progress of the hold gesture: 0.0f (not started) → 1.0f (complete). */
+    /** 0.0 → 1.0 fill during the HOLDING phase. Also used for the 2-s cancel-alert hold. */
     val holdProgress: Float = 0f,
 
-    /** Remaining seconds in the cancel countdown (5 → 0). */
+    /** Remaining seconds during COUNTDOWN (counts down 5 → 0). */
     val countdownSeconds: Int = 5,
 
-    /** Priority contacts that were notified when the alert was sent. */
-    val notifiedContacts: List<Contact> = emptyList(),
+    /** Priority contacts that exist in the repository (populated at SENT entry). */
+    val priorityContacts: List<Contact> = emptyList(),
 
-    /** True when all contacts exist but none is marked priority. */
+    /** True when the repository is completely empty. */
+    val hasNoContacts: Boolean = false,
+
+    /** True when contacts exist but none is marked as priority. */
     val hasContactsButNoPriority: Boolean = false,
 
-    /** True when the repository has no contacts at all. */
-    val hasNoContacts: Boolean = false
+    /** Progress of the "cancel alert" 2-s hold on the SENT screen (0 → 1). */
+    val cancelHoldProgress: Float = 0f
 )
