@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.securanet.common.Constants
 import com.example.securanet.domain.model.Contact
+import com.example.securanet.domain.model.DeviceType
 import com.example.securanet.domain.repository.ContactRepository
+import com.example.securanet.domain.repository.DeviceRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SosViewModel(
-    private val contactRepository: ContactRepository
+    private val contactRepository: ContactRepository,
+    private val deviceRepository: DeviceRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SosState())
@@ -24,6 +27,20 @@ class SosViewModel(
     private var holdJob: Job? = null
     private var countdownJob: Job? = null
     private var cancelHoldJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            deviceRepository.getDevices().collect { devices ->
+                val panicButton = devices.firstOrNull { it.type == DeviceType.PANIC_BUTTON }
+                val status = when {
+                    panicButton == null || !panicButton.isLinked -> PanicButtonStatus.NOT_LINKED
+                    panicButton.isConnected -> PanicButtonStatus.CONNECTED
+                    else -> PanicButtonStatus.DISCONNECTED
+                }
+                _state.update { it.copy(panicButtonStatus = status) }
+            }
+        }
+    }
 
     // -------------------------------------------------------------------------
     // SOS button hold (IDLE → HOLDING → COUNTDOWN)
@@ -79,7 +96,7 @@ class SosViewModel(
     /** "I'm okay – Cancel" pressed during countdown. */
     fun cancelCountdown() {
         countdownJob?.cancel()
-        _state.update { SosState() }
+        _state.update { it.copy(phase = SosPhase.IDLE, holdProgress = 0f, countdownSeconds = Constants.SOS_CANCEL_COUNTDOWN_SEC) }
     }
 
     /** "Send SOS now" pressed, or countdown expired. */
@@ -119,8 +136,8 @@ class SosViewModel(
                 val progress = i.toFloat() / steps
                 _state.update { it.copy(cancelHoldProgress = progress) }
             }
-            // Hold complete – reset everything
-            _state.update { SosState() }
+            // Hold complete – reset phase to IDLE
+            _state.update { it.copy(phase = SosPhase.IDLE, cancelHoldProgress = 0f) }
         }
     }
 

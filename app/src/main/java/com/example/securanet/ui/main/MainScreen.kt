@@ -30,6 +30,7 @@ import com.example.securanet.R
 import com.example.securanet.SecuraNetApplication
 import com.example.securanet.presentation.ViewModelFactory
 import com.example.securanet.presentation.contacts.ContactsViewModel
+import com.example.securanet.presentation.devices.DevicesViewModel
 import com.example.securanet.presentation.sos.SosPhase
 import com.example.securanet.presentation.sos.SosViewModel
 import com.example.securanet.ui.contacts.ContactsScreen
@@ -147,10 +148,22 @@ fun MainScreen() {
                             launchSingleTop = true
                             restoreState = true
                         }
+                    },
+                    onNavigateToDevices = {
+                        navController.navigate(Screen.Devices.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                 )
             }
-            composable(Screen.Devices.route) { DevicesScreen() }
+            composable(Screen.Devices.route) {
+                val devicesViewModel: DevicesViewModel = viewModel(factory = viewModelFactory)
+                DevicesScreen(viewModel = devicesViewModel)
+            }
             composable(Screen.TrustedNetwork.route) {
                 val contactsViewModel: ContactsViewModel = viewModel(factory = viewModelFactory)
                 ContactsScreen(viewModel = contactsViewModel)

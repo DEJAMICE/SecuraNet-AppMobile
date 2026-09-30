@@ -73,4 +73,80 @@
     <string name="sos_cancel_alert">Estoy a salvo – Cancelar alerta</string>
     <string name="sos_cancel_alert_desc">Mantén presionado 2 segundos para cancelar la alerta SOS</string>
     <string name="sos_prototype_disclaimer">Prototipo: las alertas son simuladas.</string>
+
+    <!-- Devices Tab -->
+    <string name="devices_title">Dispositivos IoT</string>
+    <string name="devices_count_connected">%1$d conectado(s)</string>
+    <string name="devices_count_linked">%1$d vinculado(s)</string>
+
+    <string name="devices_empty_title">Aún no hay dispositivos</string>
+    <string name="devices_empty_message">Vincula tu Botón del Pánico para enviar un SOS con una sola pulsación.</string>
+    <string name="devices_link_new_device">Vincular nuevo dispositivo</string>
+
+    <string name="device_badge_active">Activo</string>
+    <string name="device_badge_disconnected">Desconectado</string>
+    <string name="device_badge_inactive">Inactivo</string>
+
+    <string name="device_status_connected">Conectado - Bluetooth</string>
+    <string name="device_status_last_seen">Visto por última vez hace %1$d min</string>
+    <string name="device_status_not_linked">No vinculado</string>
+
+    <string name="device_battery">Batería %1$d%%</string>
+    <string name="device_battery_last_sync">Batería %1$d%% (última sinc.)</string>
+    <string name="device_low_battery_warning">Batería baja. Cargar pronto.</string>
+
+    <string name="device_action_test_signal">Probar señal</string>
+    <string name="device_action_unlink">Desvincular</string>
+    <string name="device_action_reconnect">Reconectar</string>
+    <string name="device_action_reconnecting">Reconectando…</string>
+    <string name="device_action_link_sensor">Vincular sensor</string>
+
+    <string name="device_test_signal_sent">Señal de prueba enviada (simulada)</string>
+
+    <string name="device_unlink_dialog_title">Desvincular dispositivo</string>
+    <string name="device_unlink_dialog_message">¿Estás seguro de que deseas desvincular %1$s? No podrás usarlo para alertas de emergencia hasta que vuelvas a vincularlo.</string>
+    <string name="device_unlink_confirm">Desvincular</string>
+
+    <string name="device_panic_button">Botón del Pánico</string>
+    <string name="device_smart_sensor">Sensor Inteligente</string>
+
+    <!-- Link Device BottomSheet -->
+    <string name="link_device_sheet_title">Vincular un nuevo dispositivo</string>
+    <string name="link_device_sheet_instruction">Asegúrate de que tu dispositivo esté encendido y cerca de tu teléfono.</string>
+    <string name="device_panic_button_desc">Una pulsación envía un SOS</string>
+    <string name="device_smart_sensor_desc">Detecta movimientos repentinos</string>
+    <string name="link_device_searching">Buscando dispositivos cercanos…</string>
+    <string name="link_device_already_linked">Este tipo de dispositivo ya está vinculado.</string>
+    <string name="link_device_action_link">Vincular</string>
+    <string name="link_device_linking">Vinculando…</string>
+    <string name="link_device_success">Dispositivo vinculado</string>
+
+    <!-- Test Signal Sheet -->
+    <string name="test_sheet_badge">Modo de prueba – No se enviará ninguna alerta real</string>
+    <string name="test_sheet_title_panic">Prueba tu Botón del Pánico</string>
+    <string name="test_sheet_title_sensor">Prueba tu Sensor Inteligente</string>
+    <string name="test_sheet_instruction">Presiona tu botón físico una vez. Esto es solo una prueba, no se enviará ninguna alerta.</string>
+    <string name="test_sheet_waiting">Esperando tu botón…</string>
+    <string name="test_sheet_result_title">¡Funciona!</string>
+    <string name="test_sheet_result_message">Señal recibida. Tu botón está listo.</string>
+    <string name="test_sheet_done">Listo</string>
+
+    <!-- Link Success Sheet -->
+    <string name="link_success_title_panic">Botón del Pánico vinculado</string>
+    <string name="link_success_title_sensor">Sensor Inteligente vinculado</string>
+    <string name="link_success_message">Puedes probarlo ahora para comprobar que funciona.</string>
+    <string name="link_success_test_now">Probar ahora</string>
+    <string name="link_success_done">Listo</string>
+
+    <!-- How to Link Sheet -->
+    <string name="how_to_link_device_link">¿Cómo vinculo mi dispositivo?</string>
+    <string name="how_to_link_title">Cómo vincular tu dispositivo</string>
+    <string name="how_to_link_step1">1. Enciende tu dispositivo.</string>
+    <string name="how_to_link_step2">2. Mantenlo cerca de tu teléfono.</string>
+    <string name="how_to_link_step3">3. Toca Vincular nuevo dispositivo y elige tu dispositivo.</string>
+    <string name="how_to_link_got_it">Entendido</string>
+
+    <!-- Home Tab Device Chip -->
+    <string name="home_button_connected">Botón conectado</string>
+    <string name="home_button_disconnected">Botón desconectado</string>
 </resources>
